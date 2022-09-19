@@ -1,0 +1,4 @@
+- In the root of the repository, open terminal and type the command `utop`
+- Load the code of `exercise1.ml` into utop by typing `#use "Lab 1\\exercise1.ml"`
+- Load the code of `fizzbuzz.ml` into utop by typing `#use "Lab 1\\fizzbuzz.ml"`
+  - Run fizzbuzz with the command `fizzbuzz 0;;`
