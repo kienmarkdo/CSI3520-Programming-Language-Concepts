@@ -14,7 +14,7 @@ This is how I set up OCaml on my Windows 10 computer.
 - Open VS Code and start coding away
   - OCaml files have extension `.ml`
   - Run `utop` in VS Code before coding
-  - Run `#use FILE_NAME` to import variables and functions in that file
+  - Run `#use FILE_NAME.ml` to import variables and functions in a file
 
 ## Learning the basics
 Introduction to OCaml: Basics & Functions - Programming with OCaml #1 [2022] by narlock https://www.youtube.com/watch?v=uJ3_bNQPixQ
