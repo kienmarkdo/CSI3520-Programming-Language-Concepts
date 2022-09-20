@@ -14,9 +14,13 @@ type employee = string * int * bool
 
 (* 1. Écrivez une fonction qui prend un employé et imprime les informations sous une forme lisible. *)
 
-(*
-let print_employee_info t =
-*)
+let employee = ("Kien", 20, false)
+
+let print_employee_info t = 
+  let (nom, age, statut_de_mariage) = t in
+  Printf.printf "Nom: %s, Âge: %d, Statut de mariage: %B. " nom age statut_de_mariage
+
+let print_employee_info_result = print_employee_info employee
 
 (* 2. Réimplémentez les fonctions standard OCaml List.length et List.rev
    Cette question est facultative, mais est une bonne pratique. *)
