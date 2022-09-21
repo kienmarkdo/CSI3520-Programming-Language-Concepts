@@ -13,7 +13,7 @@ This is how I set up OCaml on my Windows 10 computer.
   - Add the following path to new environment variable `OCAMLLIB` for {USER} `C:\OCaml64\home\{USER}\.opam\4.14.0+mingw64c\lib`
 - Open VS Code and start coding away
   - OCaml files have extension `.ml`
-  - Run `utop` in VS Code before coding
+  - Run `utop` in VS Code terminal before coding (Powershell or Bash, doesn't matter)
   - Run `#use FILE_NAME.ml` to import variables and functions in a file
 
 ## Learning the basics
