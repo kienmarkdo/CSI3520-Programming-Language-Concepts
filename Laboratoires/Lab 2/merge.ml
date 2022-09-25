@@ -25,7 +25,11 @@ let rec merge (xs:int list) (ys:int list) : int list =
 (* une liste multi-éléments doit être divisée
  * et triés récursivement, puis fusionné *)
 let rec mergesort (os:int list) : int list  =
-  [] (* TODO:  *)
+  match os with
+    |[] -> []
+    |[x] -> [x]
+    |merge ((*send first half of list here*)) ((*reverse os, then send new first half of os here*))
+  ;;
 
 let int_data1 : int list = []
 let int_data2 : int list = [5]
