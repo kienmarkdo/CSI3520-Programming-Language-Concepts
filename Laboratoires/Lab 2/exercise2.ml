@@ -18,9 +18,9 @@ let employee = ("Kien", 20, false)
 
 let print_employee_info t = 
   let (nom, age, statut_de_mariage) = t in
-  Printf.printf "Nom: %s, Âge: %d, Statut de mariage: %B. " nom age statut_de_mariage
+  Printf.printf "Nom: %s, Âge: %d, Statut de mariage: %B. " nom age statut_de_mariage;;
 
-let print_employee_info_result = print_employee_info employee
+let print_employee_info_result = print_employee_info employee;;
 
 (* 2. Réimplémentez les fonctions standard OCaml List.length et List.rev
    Cette question est facultative, mais est une bonne pratique. *)
@@ -33,47 +33,108 @@ let rev (l:'a list) : 'a list =
 
 (* 3. Supprimez le k ième élément d'une liste. Supposons l'indexation à partir de 0 *)
 (* exemple : rmk 2 ["to" ; "be" ; "or" ; "not" ; "to" ; "be"]
- * résultats : [["to" ; "be" ; "not" ; "to" ; "be"] *)
-(* let rmk (k:int) (l:string list) : string list =  *)
+ * résultats : ["to" ; "be" ; "not" ; "to" ; "be"] *)
+let rec rmk (k:int) (l:string list) : string list = 
+  match l with
+[] -> []
+| h :: t -> if k = 0 then t else h :: rmk (k-1) t;;
 
 
 (* 4. Écrivez une fonction qui renvoie la plus petite des deux arguments de type "int option",
  * ou None si les deux sont None. Si exactement un argument est None, renvoyez l'autre. Faire
  * le même pour la plus grande des deux "int options".*)
 
-(*
-let min_option (x: int option) (y: int option) : int option =
+ let min_option (x: int option) (y: int option) : int option = 
+  match x with
+    |None -> (match y with (* If x is None, check if y exists*)
+      |Some y -> Some y (* If y exists, return y*)
+      |None -> None) (* If y does not exist (and x does not exist), return None*)
+    |Some x -> (match y with
+      |Some y -> (match x < y with
+        |true -> Some x
+        |false -> Some y)
+      |None -> Some x);; (* If x exists and y does not exist, return x*)
+(** 
+# min_option (Some 11) (Some 2);;
+- : int option = Some 2
 *)
 
-(*
-let max_option (x: int option) (y: int option) : int option =
+let max_option (x: int option) (y: int option) : int option = 
+  match x with
+    |None -> (match y with
+      |Some y -> Some y
+      |None -> None)
+    |Some x -> (match y with
+      |Some y -> (match x > y with
+        |true -> Some x
+        |false -> Some y)
+      |None -> Some x);;
+
+(** 
+# max_option (Some 11) (Some 2);;
+- : int option = Some 11
 *)
 
 (* 5. Écrivez une fonction qui renvoie l'entier enterré dans l'argument
  * ou None autrement *)
 
-(*
 let get_option (x: int option option option option) : int option =
-*)
+  match x with 
+  | None                        -> None
+  | Some None                   -> None
+  | Some (Some None)            -> None
+  | Some (Some (Some None))     -> None
+  | Some (Some (Some (Some a))) -> Some a;;
 
 (* 6. Écrivez une fonction qui renvoie le booléen AND / OR de deux options bool,
  * ou None si les deux sont None. Si exactement l'un est None, renvoyez l'autre. *)
 
-(*
+
 let and_option (x:bool option) (y: bool option) : bool option =
+  match (x, y) with 
+  | (None, None) -> None
+  | (a, None) | (None, a) -> a
+  | (Some a, Some b) -> Some (a && b);;
+  (* match x with
+  | None -> (match y with
+    | Some y -> Some y
+    | None -> None)
+  | Some x -> (match y with
+    | Some y -> Some (x && y)
+    | None -> None);; *)
+
+(* 
+utop # and_option (Some true) (Some false);;
+- : bool option = Some false
+utop # and_option (Some true) (Some true);;
+- : bool option = Some true
 *)
 
-(*
+
 let or_option (x:bool option) (y: bool option) : bool option =
-*)
+  match (x, y) with 
+  | (None, None) -> None
+  | (a, None) | (None, a) -> a
+  | (Some a, Some b) -> Some (a || b);;
+  (* match x with
+  | None -> (match y with
+    | Some y -> Some y
+    | None -> None)
+  | Some x -> (match y with
+    | Some y -> Some (x || y)
+    | None -> None);; *)
+
 
 (* Quel est le motif? Comment pouvons-nous éliminer un code similaire? *)
 
 (* 7. Écrivez une fonction qui retourne l'élément final d'une liste,
    s'il existe, et None autrement*)
-(*
-let final (l: int list) : int option =
-*)
+
+let rec final (l: int list) : int option = 
+  match l with
+    | [] -> None
+    | [x] -> Some x
+    | _ :: tail -> final tail;;
 
 
 (* 8. Facultatif (mais important pour la préparation du labo de la semaine prochaine):
