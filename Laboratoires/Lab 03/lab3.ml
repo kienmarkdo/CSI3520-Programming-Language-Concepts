@@ -154,7 +154,7 @@ let times_3 (lst: int list): int list =
  *)
 
 let times_3 (lst: int list): int list = 
-   List.map (fun x -> x * 3) lst;;
+   map (fun x -> x * 3) lst;;
 
 (* Problème 5b. Ecrivez une fonction qui prend comme arguments une
    liste d’entiers et un entier et qui multiplie chaque élément de la
@@ -163,7 +163,7 @@ let times_3 (lst: int list): int list =
  *)
 
 let times_x (x: int) (lst: int list): int list = 
-   List.map (fun y -> y * x) lst;;
+   map (fun y -> y * x) lst;;
 
 (* Problème 5c. Réécrivez times_3 en utilisant times_x. Cela devrait
    nécessiter très peu de code. *)
@@ -194,11 +194,43 @@ let prod xs = reduce (fun x y -> x*y) 1 xs
    "reduce"?  Tracez le code suivant pour vous aider à
    comprendre. Montrez votre trace et donnez votre explication ici:
 
-RÉPONSE ICI
+   sum prend une liste comme paramètre et retourne la somme de tous les nombres dans la liste.
+
+   prod prend une liste comme paramètre et retourne le produit de tous les nombres dans la liste.
 
  *)
 
 let mysum = sum [2;5;6]
+
+(*
+trace de mysum
+= reduce 2 (reduce 5 (reduce 6 []))
+= reduce 2 (reduce 5 (reduce 6 0))
+= reduce 2 (reduce 5 (reduce 6 + 0))
+= reduce 2 (reduce 5 6)
+= reduce 2 (5 + 6)
+= reduce 2 11
+= 2 + 11
+= 13
+
+utop # mysum;;
+- : int = 13
+*)
 let myprod = prod [2;5;6]
+
+(* 
+trace de myprod
+= reduce 2 (reduce 5 (reduce 6 []))
+= reduce 2 (reduce 5 (reduce 6 1))
+= reduce 2 (reduce 5 (6*1))
+= reduce 2 (reduce 5 6)
+= reduce 2 (5 * 6)
+= reduce 2 30
+= 2 * 30
+= 60
+
+utop # myprod;;
+- : int = 60
+*)
 
 
