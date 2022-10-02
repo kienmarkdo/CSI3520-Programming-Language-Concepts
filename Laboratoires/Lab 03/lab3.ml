@@ -44,10 +44,12 @@ let or_option (x:bool option) (y: bool option) : bool option =
                | None -> x)
   | None -> y
 
-(*
 let calc_option (f: 'a->'a->'a) (x: 'a option) (y: 'a option) : 'a option =  
-*)
-
+   match x with
+   |Some a -> (match y with
+               | Some b -> Some (f a b)
+               | None -> x)
+   |None -> y
 
 (**************)
 (* PROBLÈME 2 *)
@@ -65,6 +67,27 @@ let and_option2 (x:bool option) (y: bool option) : bool option =
 let or_option2 (x:bool option) (y: bool option) : bool option = 
 *)
 
+let min_option2 (x: int option) (y: int option) : int option = calc_option (min) x y;;
+
+let max_option2 (x: int option) (y: int option) : int option = calc_option (max) x y;;
+
+let and_option2 (x:bool option) (y: bool option) : bool option = calc_option (&&) (x) (y);;
+ 
+let or_option2 (x:bool option) (y: bool option) : bool option = calc_option (||) (x) (y);;
+
+(**
+Test runs:
+
+utop # min_option (Some 3) (Some 5);;
+- : int option = Some 3
+
+utop # min_option2 (Some 3) (Some 5);;
+- : int option = Some 3
+
+utop # max_option2 (Some 3) (Some 5);;
+- : int option = Some 5
+*)
+
 
 (**************)
 (* PROBLÈME 3 *)
@@ -78,12 +101,22 @@ let or_option2 (x:bool option) (y: bool option) : bool option =
 let rec and_list (lst: bool list) : bool =
  *)
 
+let rec and_list (lst: bool list) : bool =
+   match lst with
+      | [] -> true
+      | h :: t -> if h = false then false else and_list (t);;
+
 (* Problème 3b. Faites la même chose que ci-dessus pour OR.
    Supposez que la valeur de (or_list []) soit FALSE. *)
 
 (* 
 let rec or_list (lst: bool list) : bool = 
  *)
+
+let rec or_list (lst: bool list) : bool =
+   match lst with
+      | [] -> false
+      | h :: t -> if h = true then true else or_list (t);;
 
 (**************)
 (* PROBLÈME 4 *)
@@ -96,6 +129,10 @@ let rec or_list (lst: bool list) : bool =
 (*
 let rec max_of_list (lst:int list) : int option =
  *)
+let rec max_of_list (lst:int list) : int option =
+   match lst with
+      | [] -> None
+      | h :: t -> max_option2 (Some h) (max_of_list t);;
 
 
 (**************)
@@ -116,17 +153,25 @@ let rec map (f:'a -> 'b) (xs: 'a list) : 'b list =
 let times_3 (lst: int list): int list = 
  *)
 
+let times_3 (lst: int list): int list = 
+   List.map (fun x -> x * 3) lst;;
+
 (* Problème 5b. Ecrivez une fonction qui prend comme arguments une
    liste d’entiers et un entier et qui multiplie chaque élément de la
    liste par l’entier. Utilisez "map". *)
 (* let times_x (x: int) (lst: int list) : int list =
  *)
 
+let times_x (x: int) (lst: int list): int list = 
+   List.map (fun y -> y * x) lst;;
+
 (* Problème 5c. Réécrivez times_3 en utilisant times_x. Cela devrait
    nécessiter très peu de code. *)
 (*            
 let times_3_shorter =
  *)
+
+let times_3_shorter (lst: int list) = times_x 3 lst;;
 
 
 (**************)
