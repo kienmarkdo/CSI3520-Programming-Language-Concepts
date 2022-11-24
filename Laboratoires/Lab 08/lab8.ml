@@ -52,6 +52,17 @@ end
    e ::= ... | e * e
  *)
 
+class prod_exp (e1:expression) (e2:expression) = object
+  inherit expression as super
+  val mutable left_exp = e1
+  val mutable right_exp = e2
+  method is_atomic = false
+  method left_sub = Some left_exp
+  method right_sub = Some right_exp
+  method value = left_exp#value * right_exp#value
+end
+
+
 (* 1(b). Create objects representing the following expressions:
    - An expression "a" representing the number 3
    - An expression "b" representing the number 0
@@ -66,6 +77,12 @@ end
    let b = ...
    ...
  *)
+let a = new number_exp 3;;
+let b = new number_exp 0;;
+let c = new number_exp 5;;
+let d = new sum_exp a b;;
+let e = new prod_exp d c;;
+e#value
                                               
 (* QUESTION 2. Unary Expressions *)
 (* Extend the class hierarchy further by writing a "square_exp".
@@ -76,6 +93,23 @@ end
    Changes will be required to the "expression" interface, so you will
    need to reimplement all the classes from above with these changes.
    Try to make as few changes as possible to the program. *)
+
+let rec pow a = function
+  | 0 -> 1
+  | 1 -> a
+  | n -> 
+    let b = pow a (n / 2) in
+    b * b * (if n mod 2 = 0 then 1 else a)
+    
+class square_exp (e1:expression) = object
+  inherit expression as super
+  val mutable left_exp = e1
+  val mutable right_exp = new number_exp 2
+  method is_atomic = false
+  method left_sub = Some left_exp
+  method right_sub = Some right_exp
+  method value = pow left_exp#value right_exp#value
+end
 
 (* QUESTION 3. Ternary Expressions and More Method Calls *)
 (* 3(a). Extend this class heirarchy by writing a "cond_exp" class to
@@ -92,12 +126,32 @@ end
    so that it handles both unary and ternary expressions.
  *)
 
+class cond_exp (e1:expression) (e2:expression) (e3:expression) = object
+  inherit expression as super
+  val mutable left_exp = e1
+  val mutable right_exp = if e1#value = 0 then e3 else e2
+  method is_atomic = false
+  method left_sub = Some left_exp
+  method right_sub = Some right_exp
+  method value = right_exp#value
+end
+
+
 (* 3(b). Re-create all the objects a,b,c,d,e above and create new
    objects:
    - An expression "f" representing the square of "c"
    - An expression "g" representing the conditional b?e:f
    Then send the message "value" to "g".
  *)
+
+let a = new number_exp 3;;
+let b = new number_exp 0;;
+let c = new number_exp 5;;
+let d = new sum_exp a b;;
+let e = new prod_exp d c;;
+let f = new square_exp c;;
+let g = new cond_exp b e f;;
+g#value
 
 (* 3(c) Enter the following expressions (for a,b,c,d,e,f,g) into OCaml
    so that you can see what is printed by the OCaml interpreter.  In
@@ -122,6 +176,15 @@ let _ = g
 let e_list : expression list = [a;b;c;d;e;f;g]
  *)
 
+let _ = a
+let _ = b
+let _ = c
+let _ = d
+let _ = e
+let _ = f
+let _ = g
+let e_list : expression list = [a;b;c;d;e;f;g]
+
 (* QUESTION 4. Redesign the entire hierarchy again, so that it
    includes a new operation that takes one argument (x:int) and
    modifies an expression object so that all of its leaves are
@@ -135,3 +198,87 @@ let e_list : expression list = [a;b;c;d;e;f;g]
    argument value greater than 0.  Then send the message "value" to
    "g". The new value should be different than the original one.
    Verify that your implementation gives the expected new value.  *)
+
+class virtual expression = object
+  method virtual is_atomic : bool
+  method virtual left_sub : expression option
+  method virtual right_sub : expression option
+  method virtual value : int
+  method virtual increment : int -> unit
+end
+
+class number_exp (n:int) = object
+  inherit expression as super
+  val mutable number_val = n
+  method is_atomic = true
+  method left_sub = None
+  method right_sub = None
+  method value = number_val
+  method increment x = (number_val <- (number_val + x))
+end               
+
+class sum_exp (e1:expression) (e2:expression) = object
+  inherit expression as super
+  val mutable left_exp = e1
+  val mutable right_exp = e2
+  method is_atomic = false
+  method left_sub = Some left_exp
+  method right_sub = Some right_exp
+  method value = left_exp#value + right_exp#value
+  method increment x = left_exp#increment x; right_exp#increment x
+end
+
+class prod_exp (e1:expression) (e2:expression) = object
+  inherit expression as super
+  val mutable left_exp = e1
+  val mutable right_exp = e2
+  method is_atomic = false
+  method left_sub = Some left_exp
+  method right_sub = Some right_exp
+  method value = left_exp#value * right_exp#value
+  method increment x = left_exp#increment x; right_exp#increment x
+end
+
+let rec pow a = function
+  | 0 -> 1
+  | 1 -> a
+  | n -> 
+    let b = pow a (n / 2) in
+    b * b * (if n mod 2 = 0 then 1 else a)
+    
+class square_exp (e1:expression) = object
+  inherit expression as super
+  val mutable left_exp = e1
+  val mutable right_exp = new number_exp 2
+  method is_atomic = false
+  method left_sub = Some left_exp
+  method right_sub = Some right_exp
+  method value = pow left_exp#value right_exp#value
+  method increment x = left_exp#increment x; 
+end
+
+class cond_exp (e1:expression) (e2:expression) (e3:expression) = object
+  inherit expression as super
+  val mutable left_exp = e1
+  val mutable right_exp = if e1#value = 0 then e3 else e2
+  method is_atomic = false
+  method left_sub = Some left_exp
+  method right_sub = Some right_exp
+  method value = right_exp#value
+  method increment x = left_exp#increment x; right_exp#increment x
+end
+
+let a = new number_exp 3;;
+let b = new number_exp 0;;
+let c = new number_exp 5;;
+let d = new sum_exp a b;;
+
+let e = new prod_exp d c;;
+e#value;;
+
+let f = new square_exp c;;
+
+let g = new cond_exp b e f;;
+g#value;;
+g#increment 1;;
+g#value;;
